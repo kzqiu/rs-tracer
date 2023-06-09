@@ -1,4 +1,7 @@
+#![allow(dead_code)]
+
 mod color;
+mod ray;
 mod vec3;
 
 use crate::vec3::Vec3;
@@ -13,7 +16,10 @@ fn main() {
     // Rendering Image
 
     for j in (0..HEIGHT).rev() {
-        eprintln!("Scanlines remaining: {j}");
+        if j % 25 == 0 {
+            eprintln!("Scanlines remaining: {j}");
+        }
+
         for i in 0..WIDTH {
             let c = Vec3 {
                 e0: (i as f64) / (WIDTH as f64 - 1.),

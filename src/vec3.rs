@@ -7,7 +7,6 @@ pub struct Vec3 {
     pub e2: f64,
 }
 
-#[allow(dead_code)]
 impl Vec3 {
     pub fn new() -> Self {
         Self {
@@ -160,6 +159,18 @@ impl ops::Mul<f64> for Vec3 {
             e0: self.e0 * other,
             e1: self.e1 * other,
             e2: self.e2 * other,
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, other: Vec3) -> Vec3 {
+        Vec3 {
+            e0: self * other.e0,
+            e1: self * other.e1,
+            e2: self * other.e2,
         }
     }
 }
