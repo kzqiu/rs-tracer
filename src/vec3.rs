@@ -1,6 +1,6 @@
 use std::ops;
 
-// #[derive(Debug)]
+#[derive(Clone, Copy)]
 pub struct Vec3 {
     pub e0: f64,
     pub e1: f64,
@@ -177,10 +177,10 @@ impl ops::Div<f64> for Vec3 {
 }
 
 // Dot product is ^
-impl ops::BitOr for Vec3 {
+impl ops::BitXor for Vec3 {
     type Output = f64;
 
-    fn bitor(self, other: Self) -> f64 {
+    fn bitxor(self, other: Self) -> f64 {
         self.e0 * other.e0 + self.e1 * other.e1 + self.e2 * other.e2
     }
 }

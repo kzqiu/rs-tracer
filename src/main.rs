@@ -27,11 +27,18 @@ fn main() {
 
     // eprintln!("Done!");
 
-    let mut a = Vec3 {
+    let a = Vec3 {
         e0: 1.,
         e1: 2.,
         e2: 3.,
     };
 
-    println!("{}", -a);
+    let b = Vec3 {
+        e0: 4.,
+        e1: 5.,
+        e2: 6.,
+    };
+
+    println!("{}", (a ^ b));
+    println!("{}", a.len_2());
 }
