@@ -176,24 +176,21 @@ impl ops::Div<f64> for Vec3 {
     }
 }
 
-// Dot product is ^
-impl ops::BitXor for Vec3 {
-    type Output = f64;
+#[inline(always)]
+fn dot(u: Vec3, v: Vec3) -> f64 {
+    u.e0 * v.e0 + u.e1 * v.e1 + u.e2 * v.e2
+}
 
-    fn bitxor(self, other: Self) -> f64 {
-        self.e0 * other.e0 + self.e1 * other.e1 + self.e2 * other.e2
+#[inline(always)]
+fn cross(u: Vec3, v: Vec3) -> Vec3 {
+    Vec3 {
+        e0: u.e1 * v.e2 - u.e2 * v.e1,
+        e1: u.e2 * v.e0 - u.e0 * v.e2,
+        e2: u.e0 * v.e1 - u.e1 * v.e0,
     }
 }
 
-// Cross product is %
-impl ops::Rem for Vec3 {
-    type Output = Self;
-
-    fn rem(self, other: Self) -> Self {
-        Self {
-            e0: self.e1 * other.e2 - self.e2 * other.e1,
-            e1: self.e2 * other.e0 - self.e0 * other.e2,
-            e2: self.e0 * other.e1 - self.e1 * other.e0,
-        }
-    }
+#[inline(always)]
+fn unit_vector(v: Vec3) -> Vec3 {
+    v / v.len()
 }
