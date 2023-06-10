@@ -6,11 +6,23 @@ mod vec3;
 
 use crate::color::write_color;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::vec3::{dot, Vec3};
+
+fn hits_sphere(center: Vec3, rad: f64, r: &Ray) -> bool {
+    let oc: Vec3 = r.origin() - center;
+    let a = dot(r.direction(), r.direction());
+    let b = 2. * dot(oc, r.direction());
+    let c = dot(oc, oc) - rad * rad;
+    let discriminant = b * b - 4. * a * c;
+    discriminant > 0.
+}
 
 fn ray_color(r: &Ray) -> Vec3 {
-    let unit_dir = vec3::unit_vector(r.dir);
+    if hits_sphere(Vec3::new(0., 0., -1.), 0.5, r) {
+        return Vec3::new(1., 0., 0.);
+    }
 
+    let unit_dir = vec3::unit_vector(r.dir);
     let t = 0.5 * (unit_dir.y() + 1.);
     (1. - t) * Vec3::new(1., 1., 1.) + t * Vec3::new(0.5, 0.7, 1.)
 }
@@ -27,14 +39,14 @@ fn main() {
 
     let origin = Vec3::new(0., 0., 0.);
     let horizontal = Vec3::new(viewport_width, 0., 0.);
-    let vertical = Vec3::new(0., viewport_width, 0.);
+    let vertical = Vec3::new(0., viewport_height, 0.);
     let lower_left = origin - horizontal / 2. - vertical / 2. - Vec3::new(0., 0., focal_len);
+    // eprintln!("{}", lower_left);
 
     // PPM Image Header
     println!("P3\n{WIDTH} {HEIGHT}\n255");
 
     // Rendering Image
-
     for j in (0..HEIGHT).rev() {
         if j % 25 == 0 {
             eprintln!("Scanlines remaining: {j}");
