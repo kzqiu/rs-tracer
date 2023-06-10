@@ -11,15 +11,15 @@ use vec3::unit_vector;
 
 fn hits_sphere(center: Vec3, rad: f64, r: &Ray) -> f64 {
     let oc: Vec3 = r.origin() - center;
-    let a = dot(r.direction(), r.direction());
-    let b = 2. * dot(oc, r.direction());
-    let c = dot(oc, oc) - rad * rad;
-    let discriminant = b * b - 4. * a * c;
+    let a = r.direction().len_2();
+    let half_b = dot(oc, r.direction());
+    let c = oc.len_2() - rad * rad;
+    let discriminant = half_b * half_b - a * c;
 
     if discriminant < 0. {
         -1.
     } else {
-        (-b - discriminant.sqrt()) / (2. * a)
+        (-half_b - discriminant.sqrt()) / a
     }
 }
 
