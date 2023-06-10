@@ -8,11 +8,11 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new() -> Self {
+    pub fn new(a: f64, b: f64, c: f64) -> Self {
         Self {
-            e0: 0.,
-            e1: 0.,
-            e2: 0.,
+            e0: a,
+            e1: b,
+            e2: c,
         }
     }
 
@@ -202,6 +202,6 @@ fn cross(u: Vec3, v: Vec3) -> Vec3 {
 }
 
 #[inline(always)]
-fn unit_vector(v: Vec3) -> Vec3 {
+pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.len()
 }
