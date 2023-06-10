@@ -7,19 +7,28 @@ mod vec3;
 use crate::color::write_color;
 use crate::ray::Ray;
 use crate::vec3::{dot, Vec3};
+use vec3::unit_vector;
 
-fn hits_sphere(center: Vec3, rad: f64, r: &Ray) -> bool {
+fn hits_sphere(center: Vec3, rad: f64, r: &Ray) -> f64 {
     let oc: Vec3 = r.origin() - center;
     let a = dot(r.direction(), r.direction());
     let b = 2. * dot(oc, r.direction());
     let c = dot(oc, oc) - rad * rad;
     let discriminant = b * b - 4. * a * c;
-    discriminant > 0.
+
+    if discriminant < 0. {
+        -1.
+    } else {
+        (-b - discriminant.sqrt()) / (2. * a)
+    }
 }
 
 fn ray_color(r: &Ray) -> Vec3 {
-    if hits_sphere(Vec3::new(0., 0., -1.), 0.5, r) {
-        return Vec3::new(1., 0., 0.);
+    let t = hits_sphere(Vec3::new(0., 0., -1.), 0.5, r);
+
+    if t > 0. {
+        let norm = unit_vector(r.at(t) - Vec3::new(0., 0., -1.));
+        return 0.5 * Vec3::new(norm.x() + 1., norm.y() + 1., norm.z() + 1.);
     }
 
     let unit_dir = vec3::unit_vector(r.dir);
