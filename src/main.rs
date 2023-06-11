@@ -1,7 +1,9 @@
 #![allow(dead_code, unused_variables)]
 
 mod color;
+mod hittable;
 mod ray;
+mod sphere;
 mod vec3;
 
 use crate::color::write_color;
