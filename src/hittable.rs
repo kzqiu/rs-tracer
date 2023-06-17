@@ -9,6 +9,15 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
+    pub fn new() -> Self {
+        HitRecord {
+            p: Vec3::new(0., 0., 0.),
+            norm: Vec3::new(0., 0., 0.),
+            t: 0.,
+            front: false,
+        }
+    }
+
     pub fn set_face_normal(&mut self, r: &Ray, outward_norm: Vec3) {
         self.front = dot(r.direction(), outward_norm) < 0.;
         self.norm = if self.front {

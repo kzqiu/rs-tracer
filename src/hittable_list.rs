@@ -25,12 +25,7 @@ impl HittableList {
 
 impl Hittable for HittableList {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let mut tmp_rec = HitRecord {
-            p: Vec3::new(0., 0., 0.),
-            norm: Vec3::new(0., 0., 0.),
-            t: 0.,
-            front: false,
-        };
+        let mut tmp_rec = HitRecord::new();
         let mut hit_anything: bool = false;
         let mut closest_so_far: f64 = t_max;
 
