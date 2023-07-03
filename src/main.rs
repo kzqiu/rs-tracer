@@ -7,13 +7,15 @@ mod ray;
 mod sphere;
 mod vec3;
 
-use crate::color::write_color;
+// use crate::color::write_color;
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::{unit_vector, Vec3};
 use std::rc::Rc;
+
+use image::{ImageBuffer, Rgb, RgbImage};
 
 const PI: f64 = 3.1415926535897932385;
 const INF: f64 = f64::INFINITY;
@@ -37,8 +39,10 @@ fn ray_color(r: &Ray, world: &impl Hittable) -> Vec3 {
 fn main() {
     // Image
     const ASPECT_RATIO: f64 = 16. / 9.;
-    const WIDTH: u64 = 400;
-    const HEIGHT: u64 = (WIDTH as f64 / ASPECT_RATIO) as u64;
+    const WIDTH: u32 = 400;
+    const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
+
+    let mut buffer: RgbImage = ImageBuffer::new(WIDTH, HEIGHT);
 
     // World
     let mut world = HittableList::new();
@@ -53,34 +57,26 @@ fn main() {
     let horizontal = Vec3::new(viewport_width, 0., 0.);
     let vertical = Vec3::new(0., viewport_height, 0.);
     let lower_left = origin - horizontal / 2. - vertical / 2. - Vec3::new(0., 0., focal_len);
-    // eprintln!("{}", lower_left);
-
-    // PPM Image Header
-    println!("P3\n{WIDTH} {HEIGHT}\n255");
 
     // Rendering Image
-    for j in (0..HEIGHT).rev() {
-        if j % 25 == 0 {
-            eprintln!("Scanlines remaining: {j}");
-        }
+    for (i, j, pixel) in buffer.enumerate_pixels_mut() {
+        let u: f64 = (i as f64) / (WIDTH as f64 - 1.);
+        let v: f64 = ((HEIGHT - j) as f64) / (HEIGHT as f64 - 1.);
+        let r = Ray {
+            orig: origin,
+            dir: lower_left + u * horizontal + v * vertical - origin,
+        };
 
-        for i in 0..WIDTH {
-            let u: f64 = (i as f64) / (WIDTH as f64 - 1.);
-            let v: f64 = (j as f64) / (HEIGHT as f64 - 1.);
-            let r = Ray {
-                orig: origin,
-                dir: lower_left + u * horizontal + v * vertical - origin,
-            };
-
-            // let c = Vec3 {
-            //     e0: (i as f64) / (WIDTH as f64 - 1.),
-            //     e1: (j as f64) / (HEIGHT as f64 - 1.),
-            //     e2: 0.25,
-            // };
-
-            write_color(ray_color(&r, &world));
-        }
+        let color = ray_color(&r, &world);
+        *pixel = Rgb([
+            (255.99 * color.x()) as u8,
+            (255.99 * color.y()) as u8,
+            (255.99 * color.z()) as u8,
+        ]);
     }
 
-    eprintln!("Done!");
+    match buffer.save("image.png") {
+        Err(e) => eprintln!("Error writing file: {}", e),
+        Ok(_) => println!("Done."),
+    };
 }
