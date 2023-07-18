@@ -2,11 +2,24 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
 use crate::vec3::{unit_vector, Vec3};
 
-pub fn ray_color(r: &Ray, world: &impl Hittable) -> Vec3 {
+pub fn ray_color(r: &Ray, world: &impl Hittable, depth: u32) -> Vec3 {
     let mut rec = HitRecord::new();
 
-    if world.hit(r, 0., crate::INF, &mut rec) {
-        return 0.5 * (rec.norm + Vec3::new(1., 1., 1.));
+    if depth <= 0 {
+        return Vec3::new(0., 0., 0.);
+    }
+
+    if world.hit(r, 0.001, crate::INF, &mut rec) {
+        let target = rec.p + rec.norm + Vec3::random_unit();
+        return 0.5
+            * ray_color(
+                &Ray {
+                    orig: rec.p,
+                    dir: target - rec.p,
+                },
+                world,
+                depth - 1,
+            );
     }
 
     let unit_dir = unit_vector(r.dir);

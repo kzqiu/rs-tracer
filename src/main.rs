@@ -32,9 +32,10 @@ fn deg_to_rad(deg: f64) -> f64 {
 fn main() {
     // Image
     const ASPECT_RATIO: f64 = 16. / 9.;
-    const WIDTH: u32 = 800;
+    const WIDTH: u32 = 400;
     const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
     const SAMPLES_PER_PIXEL: u32 = 100;
+    const MAX_DEPTH: u32 = 50;
 
     let mut img = RgbImage::new(WIDTH, HEIGHT);
 
@@ -44,7 +45,6 @@ fn main() {
     world.add(Rc::new(Sphere::new(Vec3::new(0., -100.5, -1.), 100.)));
 
     let camera = Camera::new();
-
     let stride = WIDTH as usize * 3;
 
     img.deref_mut()
@@ -64,14 +64,14 @@ fn main() {
                         / (HEIGHT as f64 - 1.);
 
                     let r = camera.get_ray(u, v);
-                    color += ray_color(&r, &world);
+                    color += ray_color(&r, &world, MAX_DEPTH);
                 }
 
                 let scale = 1. / SAMPLES_PER_PIXEL as f64;
 
-                let a = clamp(color.x() * scale, 0., 0.999);
-                let b = clamp(color.y() * scale, 0., 0.999);
-                let c = clamp(color.z() * scale, 0., 0.999);
+                let a = clamp((color.x() * scale).sqrt(), 0., 0.999);
+                let b = clamp((color.y() * scale).sqrt(), 0., 0.999);
+                let c = clamp((color.z() * scale).sqrt(), 0., 0.999);
 
                 let Rgb(a) = Rgb([(256. * a) as u8, (256. * b) as u8, (256. * c) as u8]);
 

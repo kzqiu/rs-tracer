@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::ops;
 
 #[derive(Clone, Copy)]
@@ -14,6 +15,37 @@ impl Vec3 {
             e1: b,
             e2: c,
         }
+    }
+
+    pub fn random() -> Self {
+        Self {
+            e0: rand::thread_rng().gen(),
+            e1: rand::thread_rng().gen(),
+            e2: rand::thread_rng().gen(),
+        }
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Self {
+        Self {
+            e0: rand::thread_rng().gen_range(min..max),
+            e1: rand::thread_rng().gen_range(min..max),
+            e2: rand::thread_rng().gen_range(min..max),
+        }
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Vec3::random_range(-1., 1.);
+            if dot(p, p) >= 1. {
+                continue;
+            }
+
+            return p;
+        }
+    }
+
+    pub fn random_unit() -> Self {
+        unit_vector(Vec3::random_in_unit_sphere())
     }
 
     pub fn x(&self) -> f64 {
