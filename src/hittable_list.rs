@@ -1,6 +1,5 @@
 use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
-use crate::vec3::Vec3;
 use std::rc::Rc;
 
 pub struct HittableList {
@@ -43,3 +42,6 @@ impl Hittable for HittableList {
         hit_anything
     }
 }
+
+unsafe impl Send for HittableList {}
+unsafe impl Sync for HittableList {}
