@@ -4,6 +4,7 @@ mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
+mod material;
 mod ray;
 mod sphere;
 mod vec3;
@@ -11,6 +12,7 @@ mod vec3;
 use crate::camera::Camera;
 use crate::color::{clamp, ray_color};
 use crate::hittable_list::HittableList;
+use crate::material::{Lambertian, MatType, Metal};
 use crate::sphere::Sphere;
 use crate::vec3::Vec3;
 use rand::Rng;
@@ -39,10 +41,32 @@ fn main() {
 
     let mut img = RgbImage::new(WIDTH, HEIGHT);
 
-    // World
+    // Surfaces
+    let mat_ground = MatType::Lambertian(Lambertian {
+        albedo: Vec3::new(0.8, 0.8, 0.),
+    });
+    let mat_cent = MatType::Lambertian(Lambertian {
+        albedo: Vec3::new(0.7, 0.3, 0.3),
+    });
+    let mat_left = MatType::Metal(Metal {
+        albedo: Vec3::new(0.8, 0.8, 0.8),
+        fuzz: 0.3,
+    });
+    let mat_right = MatType::Metal(Metal {
+        albedo: Vec3::new(0.8, 0.6, 0.2),
+        fuzz: 1.,
+    });
+
+    // World objects
     let mut world = HittableList::new();
-    world.add(Rc::new(Sphere::new(Vec3::new(0., 0., -1.), 0.5)));
-    world.add(Rc::new(Sphere::new(Vec3::new(0., -100.5, -1.), 100.)));
+    world.add(Rc::new(Sphere::new(Vec3::new(0., 0., -1.), 0.5, mat_cent)));
+    world.add(Rc::new(Sphere::new(
+        Vec3::new(0., -100.5, -1.),
+        100.,
+        mat_ground,
+    )));
+    world.add(Rc::new(Sphere::new(Vec3::new(-1., 0., -1.), 0.5, mat_left)));
+    world.add(Rc::new(Sphere::new(Vec3::new(1., 0., -1.), 0.5, mat_right)));
 
     let camera = Camera::new();
     let stride = WIDTH as usize * 3;

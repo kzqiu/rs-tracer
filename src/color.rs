@@ -10,16 +10,20 @@ pub fn ray_color(r: &Ray, world: &impl Hittable, depth: u32) -> Vec3 {
     }
 
     if world.hit(r, 0.001, crate::INF, &mut rec) {
-        let target = rec.p + rec.norm + Vec3::random_unit();
-        return 0.5
-            * ray_color(
-                &Ray {
-                    orig: rec.p,
-                    dir: target - rec.p,
-                },
-                world,
-                depth - 1,
-            );
+        let mut scattered = Ray {
+            orig: Vec3::new(0., 0., 0.),
+            dir: Vec3::new(0., 0., 0.),
+        };
+        let mut attenuation = Vec3::new(0., 0., 0.);
+
+        if rec
+            .material
+            .scatter(r, &rec, &mut attenuation, &mut scattered)
+        {
+            return attenuation * ray_color(&scattered, world, depth - 1);
+        }
+
+        return Vec3::new(0., 0., 0.);
     }
 
     let unit_dir = unit_vector(r.dir);

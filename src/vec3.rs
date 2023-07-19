@@ -67,6 +67,12 @@ impl Vec3 {
     pub fn len(&self) -> f64 {
         self.len_2().sqrt()
     }
+
+    pub fn near_zero(&self) -> bool {
+        let s: f64 = 0.000000001;
+
+        self.e0.abs() < s && self.e1.abs() < s && self.e2.abs() < s
+    }
 }
 
 impl std::fmt::Display for Vec3 {
@@ -236,4 +242,8 @@ pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
 #[inline(always)]
 pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.len()
+}
+
+pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+    v - 2. * dot(v, n) * n
 }

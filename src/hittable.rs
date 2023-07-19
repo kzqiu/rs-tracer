@@ -1,3 +1,4 @@
+use crate::material::MatType;
 use crate::ray::Ray;
 use crate::vec3::{dot, Vec3};
 
@@ -6,6 +7,7 @@ pub struct HitRecord {
     pub norm: Vec3,
     pub t: f64,
     pub front: bool,
+    pub material: MatType,
 }
 
 impl HitRecord {
@@ -15,6 +17,9 @@ impl HitRecord {
             norm: Vec3::new(0., 0., 0.),
             t: 0.,
             front: false,
+            material: MatType::Lambertian(crate::material::Lambertian {
+                albedo: Vec3::new(1., 1., 1.),
+            }),
         }
     }
 
