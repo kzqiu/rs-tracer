@@ -1,5 +1,5 @@
 # rs-tracer
-A small ray-tracing project written in Rust.
+A small ray-tracing project written in Rust. Inspired by the [Ray Tracing in One Weekend](https://raytracing.github.io/) series. Go check them out!
 
 To generate a .png image in directory you are running it from:
 
