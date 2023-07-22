@@ -12,7 +12,7 @@ mod vec3;
 use crate::camera::Camera;
 use crate::color::{clamp, ray_color};
 use crate::hittable_list::HittableList;
-use crate::material::{Lambertian, MatType, Metal};
+use crate::material::{Dielectric, Lambertian, MatType, Metal};
 use crate::sphere::Sphere;
 use crate::vec3::Vec3;
 use rand::Rng;
@@ -46,15 +46,14 @@ fn main() {
         albedo: Vec3::new(0.8, 0.8, 0.),
     });
     let mat_cent = MatType::Lambertian(Lambertian {
-        albedo: Vec3::new(0.7, 0.3, 0.3),
+        albedo: Vec3::new(0.1, 0.2, 0.5),
     });
-    let mat_left = MatType::Metal(Metal {
-        albedo: Vec3::new(0.8, 0.8, 0.8),
-        fuzz: 0.3,
+    let mat_left = MatType::Dielectric(Dielectric {
+        index_refraction: 1.5,
     });
     let mat_right = MatType::Metal(Metal {
         albedo: Vec3::new(0.8, 0.6, 0.2),
-        fuzz: 1.,
+        fuzz: 0.,
     });
 
     // World objects
@@ -66,6 +65,11 @@ fn main() {
         mat_ground,
     )));
     world.add(Rc::new(Sphere::new(Vec3::new(-1., 0., -1.), 0.5, mat_left)));
+    world.add(Rc::new(Sphere::new(
+        Vec3::new(-1., 0., -1.),
+        -0.4,
+        mat_left,
+    )));
     world.add(Rc::new(Sphere::new(Vec3::new(1., 0., -1.), 0.5, mat_right)));
 
     let camera = Camera::new();
