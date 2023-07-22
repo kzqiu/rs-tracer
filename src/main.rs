@@ -89,12 +89,20 @@ fn main() {
     //     material_right,
     // )));
 
+    let lookfrom = Vec3::new(3., 3., 2.);
+    let lookat = Vec3::new(0., 0., -1.);
+    let vup = Vec3::new(0., 1., 0.);
+    let aperture = 2.;
+    let dist_to_focus = (lookfrom - lookat).len();
+
     let camera = Camera::new(
-        Vec3::new(-2., 2., 1.),
-        Vec3::new(0., 0., -1.),
-        Vec3::new(0., 1., 0.),
+        lookfrom,
+        lookat,
+        vup,
         20.,
         ASPECT_RATIO,
+        aperture,
+        dist_to_focus,
     );
     let stride = WIDTH as usize * 3;
 
