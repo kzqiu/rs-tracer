@@ -41,6 +41,8 @@ fn main() {
 
     let mut img = RgbImage::new(WIDTH, HEIGHT);
 
+    // World objects
+    let mut world = HittableList::new();
     // Surfaces
     let mat_ground = MatType::Lambertian(Lambertian {
         albedo: Vec3::new(0.8, 0.8, 0.),
@@ -55,9 +57,6 @@ fn main() {
         albedo: Vec3::new(0.8, 0.6, 0.2),
         fuzz: 0.,
     });
-
-    // World objects
-    let mut world = HittableList::new();
     world.add(Rc::new(Sphere::new(Vec3::new(0., 0., -1.), 0.5, mat_cent)));
     world.add(Rc::new(Sphere::new(
         Vec3::new(0., -100.5, -1.),
@@ -72,7 +71,31 @@ fn main() {
     )));
     world.add(Rc::new(Sphere::new(Vec3::new(1., 0., -1.), 0.5, mat_right)));
 
-    let camera = Camera::new();
+    // let r = (PI / 4.).cos();
+    // let material_left = MatType::Lambertian(Lambertian {
+    //     albedo: Vec3::new(0., 0., 1.),
+    // });
+    // let material_right = MatType::Lambertian(Lambertian {
+    //     albedo: Vec3::new(1., 0., 0.),
+    // });
+    // world.add(Rc::new(Sphere::new(
+    //     Vec3::new(-r, 0., -1.),
+    //     r,
+    //     material_left,
+    // )));
+    // world.add(Rc::new(Sphere::new(
+    //     Vec3::new(r, 0., -1.),
+    //     r,
+    //     material_right,
+    // )));
+
+    let camera = Camera::new(
+        Vec3::new(-2., 2., 1.),
+        Vec3::new(0., 0., -1.),
+        Vec3::new(0., 1., 0.),
+        20.,
+        ASPECT_RATIO,
+    );
     let stride = WIDTH as usize * 3;
 
     img.deref_mut()
