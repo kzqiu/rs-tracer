@@ -19,9 +19,9 @@ I think that this project has come off to a great beginning, but I'm just gettin
 * [x] Basic shading
 * [x] Anti-aliasing (stochastic sampling)
 * [x] Materials (Lambertian/Diffuse, Metal)
-* [ ] Dielectrics
-* [ ] Defocus blur
-* [ ] Moveable camera
+* [x] Dielectrics
+* [x] Defocus blur
+* [x] Moveable camera
 * [ ] Motion blur
 * [ ] Bounding volume hierarchies
 * [ ] Perlin (and Voronoi?) noise
