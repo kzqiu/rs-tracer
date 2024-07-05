@@ -29,7 +29,7 @@ cargo run --example <example_name>
 ![defocus_blur](https://github.com/kzqiu/rs-tracer/blob/main/imgs/dof.png?raw=true)
 
 * [x] Moveable camera
-* [ ] Motion blur
+* [x] Motion blur (moving objects)
 * [ ] Bounding volume hierarchies
 * [ ] Perlin (and Voronoi?) noise
 * [ ] Additional shapes

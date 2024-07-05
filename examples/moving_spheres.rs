@@ -76,7 +76,7 @@ fn main() {
     let lookfrom = Vec3::new(13., 2., 3.);
     let lookat = Vec3::new(0., 0., 0.);
     let vup = Vec3::new(0., 1., 0.);
-    let aperture = 2.;
+    let aperture = 0.25;
     let dist_to_focus = 10.;
 
     let camera = Camera::new(
