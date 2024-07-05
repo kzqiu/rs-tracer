@@ -17,9 +17,17 @@ cargo run --example <example_name>
 * [x] Calculating collisions between rays and generic list of objects (the world)
 * [x] Basic shading
 * [x] Anti-aliasing (stochastic sampling)
-* [x] Materials (Lambertian/Diffuse, Metal)
-* [x] Dielectrics
+
+![anti-aliased](https://github.com/kzqiu/rs-tracer/blob/main/imgs/anti_alias.png?raw=true)
+
+* [x] Materials (Lambertian/Diffuse, Metal, Dielectrics)
+
+![materials](https://github.com/kzqiu/rs-tracer/blob/main/imgs/balls-farview.png?raw=true)
+
 * [x] Defocus blur
+
+![defocus_blur](https://github.com/kzqiu/rs-tracer/blob/main/imgs/dof.png?raw=true)
+
 * [x] Moveable camera
 * [ ] Motion blur
 * [ ] Bounding volume hierarchies
