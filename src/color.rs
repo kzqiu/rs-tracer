@@ -27,7 +27,7 @@ pub fn ray_color(r: &Ray, world: &impl Hittable, depth: u32) -> Vec3 {
     }
 
     let unit_dir = unit_vector(r.dir);
-    let t = 0.5 * (unit_dir.y() + 1.);
+    let t = 0.5 * (unit_dir.y + 1.);
     (1. - t) * Vec3::new(1., 1., 1.) + t * Vec3::new(0.5, 0.7, 1.)
 }
 

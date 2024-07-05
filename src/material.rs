@@ -80,13 +80,13 @@ impl Material for Metal {
         attenuation: &mut Vec3,
         scattered: &mut Ray,
     ) -> bool {
-        let reflected: Vec3 = reflect(unit_vector(r_in.direction()), rec.norm);
+        let reflected: Vec3 = reflect(unit_vector(r_in.dir), rec.norm);
         *scattered = Ray {
             orig: rec.p,
             dir: reflected + self.fuzz * Vec3::random_unit(),
         };
         *attenuation = self.albedo;
-        dot(scattered.direction(), rec.norm) > 0.
+        dot(scattered.dir, rec.norm) > 0.
     }
 }
 
@@ -119,7 +119,7 @@ impl Material for Dielectric {
             self.index_refraction
         };
 
-        let unit_dir = unit_vector(r_in.direction());
+        let unit_dir = unit_vector(r_in.dir);
         let cos_theta = dot(-unit_dir, rec.norm).min(1.);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let dir;

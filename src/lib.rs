@@ -74,9 +74,9 @@ pub fn render(world: HittableList, camera: Camera, config: ImageConfig) -> RgbIm
 
                 let scale = 1. / config.samples_per_pixel as f64;
 
-                let a = clamp((color.x() * scale).sqrt(), 0., 0.999);
-                let b = clamp((color.y() * scale).sqrt(), 0., 0.999);
-                let c = clamp((color.z() * scale).sqrt(), 0., 0.999);
+                let a = clamp((color.x * scale).sqrt(), 0., 0.999);
+                let b = clamp((color.y * scale).sqrt(), 0., 0.999);
+                let c = clamp((color.z * scale).sqrt(), 0., 0.999);
 
                 let Rgb(a) = Rgb([(256. * a) as u8, (256. * b) as u8, (256. * c) as u8]);
 
