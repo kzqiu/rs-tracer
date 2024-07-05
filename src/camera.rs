@@ -27,7 +27,7 @@ impl Camera {
         let h = (theta / 2.).tan();
         let viewport_height: f64 = 2. * h;
         let viewport_width: f64 = aspect_ratio * viewport_height;
-        let focal_len: f64 = 1.;
+        // let focal_len: f64 = 1.; // currently unused
 
         let w = unit_vector(lookfrom - lookat);
         let u = unit_vector(cross(vup, w));

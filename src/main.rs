@@ -1,49 +1,15 @@
-#![allow(dead_code, unused_variables)]
-
-mod camera;
-mod color;
-mod hittable;
-mod hittable_list;
-mod material;
-mod ray;
-mod sphere;
-mod vec3;
-
-use crate::camera::Camera;
-use crate::color::{clamp, ray_color};
-use crate::hittable_list::HittableList;
-use crate::material::{Dielectric, Lambertian, MatType, Metal};
-use crate::sphere::Sphere;
-use crate::vec3::Vec3;
-use rand::Rng;
-use rayon::iter::{IndexedParallelIterator, ParallelIterator};
-use rayon::prelude::ParallelSliceMut;
-use std::ops::DerefMut;
+use rs_tracer::camera::Camera;
+use rs_tracer::hittable_list::HittableList;
+use rs_tracer::material::{Dielectric, Lambertian, MatType, Metal};
+use rs_tracer::sphere::Sphere;
+use rs_tracer::vec3::Vec3;
+use rs_tracer::{render, ImageConfig};
 use std::rc::Rc;
 
-use image::{Rgb, RgbImage};
-
-// Utility constants and functions
-const PI: f64 = 3.1415926535897932385;
-const INF: f64 = f64::INFINITY;
-
-fn deg_to_rad(deg: f64) -> f64 {
-    return deg * PI / 180.;
-}
-
 fn main() {
-    // Image
-    const ASPECT_RATIO: f64 = 16. / 9.;
-    const WIDTH: u32 = 400;
-    const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
-    const SAMPLES_PER_PIXEL: u32 = 100;
-    const MAX_DEPTH: u32 = 50;
-
-    let mut img = RgbImage::new(WIDTH, HEIGHT);
-
-    // World objects
+    // create a scene
     let mut world = HittableList::new();
-    // Surfaces
+
     let mat_ground = MatType::Lambertian(Lambertian {
         albedo: Vec3::new(0.8, 0.8, 0.),
     });
@@ -71,23 +37,7 @@ fn main() {
     )));
     world.add(Rc::new(Sphere::new(Vec3::new(1., 0., -1.), 0.5, mat_right)));
 
-    // let r = (PI / 4.).cos();
-    // let material_left = MatType::Lambertian(Lambertian {
-    //     albedo: Vec3::new(0., 0., 1.),
-    // });
-    // let material_right = MatType::Lambertian(Lambertian {
-    //     albedo: Vec3::new(1., 0., 0.),
-    // });
-    // world.add(Rc::new(Sphere::new(
-    //     Vec3::new(-r, 0., -1.),
-    //     r,
-    //     material_left,
-    // )));
-    // world.add(Rc::new(Sphere::new(
-    //     Vec3::new(r, 0., -1.),
-    //     r,
-    //     material_right,
-    // )));
+    let config = ImageConfig::new();
 
     let lookfrom = Vec3::new(3., 3., 2.);
     let lookat = Vec3::new(0., 0., -1.);
@@ -100,43 +50,12 @@ fn main() {
         lookat,
         vup,
         20.,
-        ASPECT_RATIO,
+        config.aspect_ratio,
         aperture,
         dist_to_focus,
     );
-    let stride = WIDTH as usize * 3;
 
-    img.deref_mut()
-        .par_chunks_exact_mut(stride)
-        .enumerate()
-        .for_each(|(y, row)| {
-            for (x, pixel) in row.chunks_exact_mut(3).enumerate() {
-                if x >= WIDTH as usize || y >= HEIGHT as usize {
-                    continue;
-                }
-
-                let mut color = Vec3::new(0., 0., 0.);
-
-                for s in 0..SAMPLES_PER_PIXEL {
-                    let u: f64 = (x as f64 + rand::thread_rng().gen::<f64>()) / (WIDTH as f64 - 1.);
-                    let v: f64 = ((HEIGHT - y as u32) as f64 + rand::thread_rng().gen::<f64>())
-                        / (HEIGHT as f64 - 1.);
-
-                    let r = camera.get_ray(u, v);
-                    color += ray_color(&r, &world, MAX_DEPTH);
-                }
-
-                let scale = 1. / SAMPLES_PER_PIXEL as f64;
-
-                let a = clamp((color.x() * scale).sqrt(), 0., 0.999);
-                let b = clamp((color.y() * scale).sqrt(), 0., 0.999);
-                let c = clamp((color.z() * scale).sqrt(), 0., 0.999);
-
-                let Rgb(a) = Rgb([(256. * a) as u8, (256. * b) as u8, (256. * c) as u8]);
-
-                pixel.copy_from_slice(&a);
-            }
-        });
+    let img = render(world, camera, ImageConfig::new()); // use default camera config
 
     match img.save("image.png") {
         Err(e) => eprintln!("Error writing file: {}", e),
