@@ -15,7 +15,7 @@ fn main() {
     });
     world.add(Rc::new(Sphere::new(Vec3::new(0., 0., -1.), 0.5, mat_cent)));
 
-    let config = ImageConfig::new();
+    let config = ImageConfig::default();
 
     let lookfrom = Vec3::new(5., 0., 2.);
     let lookat = Vec3::new(0., 0., -1.);
@@ -33,7 +33,7 @@ fn main() {
         dist_to_focus,
     );
 
-    let img = render(world, camera, ImageConfig::new()); // use default camera config
+    let img = render(world, camera, config); // use default camera config
 
     match img.save("sphere.png") {
         Err(e) => eprintln!("Error writing file: {}", e),

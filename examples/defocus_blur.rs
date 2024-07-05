@@ -13,6 +13,13 @@ fn main() {
     let mat_ground = MatType::Lambertian(Lambertian {
         albedo: Vec3::new(0.8, 0.8, 0.),
     });
+
+    world.add(Rc::new(Sphere::new(
+        Vec3::new(0., -100.5, -1.),
+        100.,
+        mat_ground,
+    )));
+
     let mat_cent = MatType::Lambertian(Lambertian {
         albedo: Vec3::new(0.1, 0.2, 0.5),
     });
@@ -24,11 +31,6 @@ fn main() {
         fuzz: 0.,
     });
     world.add(Rc::new(Sphere::new(Vec3::new(0., 0., -1.), 0.5, mat_cent)));
-    world.add(Rc::new(Sphere::new(
-        Vec3::new(0., -100.5, -1.),
-        100.,
-        mat_ground,
-    )));
     world.add(Rc::new(Sphere::new(Vec3::new(-1., 0., -1.), 0.5, mat_left)));
     world.add(Rc::new(Sphere::new(
         Vec3::new(-1., 0., -1.),
@@ -37,7 +39,7 @@ fn main() {
     )));
     world.add(Rc::new(Sphere::new(Vec3::new(1., 0., -1.), 0.5, mat_right)));
 
-    let config = ImageConfig::new();
+    let config = ImageConfig::default();
 
     let lookfrom = Vec3::new(3., 3., 2.);
     let lookat = Vec3::new(0., 0., -1.);
@@ -55,9 +57,9 @@ fn main() {
         dist_to_focus,
     );
 
-    let img = render(world, camera, ImageConfig::new()); // use default camera config
+    let img = render(world, camera, config); // use default camera config
 
-    match img.save("dof.png") {
+    match img.save("defocus_blur.png") {
         Err(e) => eprintln!("Error writing file: {}", e),
         Ok(_) => println!("Done."),
     };

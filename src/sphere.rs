@@ -7,6 +7,8 @@ pub struct Sphere {
     pub center: Vec3,
     pub rad: f64,
     pub material: MatType,
+    pub velocity: Vec3,
+    pub moving: bool,
 }
 
 impl Sphere {
@@ -15,13 +17,34 @@ impl Sphere {
             center,
             rad,
             material,
+            velocity: Vec3::default(),
+            moving: false,
         }
+    }
+
+    pub fn new_moving(center: Vec3, target: Vec3, rad: f64, material: MatType) -> Self {
+        Sphere {
+            center,
+            rad,
+            material,
+            velocity: target - center,
+            moving: true,
+        }
+    }
+
+    fn sphere_center(&self, time: f64) -> Vec3 {
+        self.center + time * self.velocity
     }
 }
 
 impl Hittable for Sphere {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let oc: Vec3 = r.orig - self.center;
+        let center = if self.moving {
+            self.sphere_center(r.time)
+        } else {
+            self.center
+        };
+        let oc: Vec3 = r.orig - center;
         let a = r.dir.len_2();
         let half_b = dot(oc, r.dir);
         let c = oc.len_2() - self.rad * self.rad;

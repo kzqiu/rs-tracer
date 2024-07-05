@@ -33,8 +33,8 @@ pub struct ImageConfig {
     pub max_depth: u32,
 }
 
-impl ImageConfig {
-    pub fn new() -> ImageConfig {
+impl Default for ImageConfig {
+    fn default() -> ImageConfig {
         ImageConfig {
             aspect_ratio: 16. / 9.,
             width: 400,

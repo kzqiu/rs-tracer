@@ -1,6 +1,7 @@
 use crate::deg_to_rad;
 use crate::ray::Ray;
 use crate::vec3::{cross, unit_vector, Vec3};
+use rand::Rng;
 
 pub struct Camera {
     pub origin: Vec3,
@@ -27,7 +28,6 @@ impl Camera {
         let h = (theta / 2.).tan();
         let viewport_height: f64 = 2. * h;
         let viewport_width: f64 = aspect_ratio * viewport_height;
-        // let focal_len: f64 = 1.; // currently unused
 
         let w = unit_vector(lookfrom - lookat);
         let u = unit_vector(cross(vup, w));
@@ -60,6 +60,7 @@ impl Camera {
             dir: self.lower_left_corner + s * self.horizontal + t * self.vertical
                 - self.origin
                 - offset,
+            time: rand::thread_rng().gen(),
         }
     }
 }

@@ -10,10 +10,7 @@ pub fn ray_color(r: &Ray, world: &impl Hittable, depth: u32) -> Vec3 {
     }
 
     if world.hit(r, 0.001, crate::INF, &mut rec) {
-        let mut scattered = Ray {
-            orig: Vec3::new(0., 0., 0.),
-            dir: Vec3::new(0., 0., 0.),
-        };
+        let mut scattered = Ray::default();
         let mut attenuation = Vec3::new(0., 0., 0.);
 
         if rec

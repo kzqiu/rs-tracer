@@ -39,6 +39,14 @@ impl MatType {
     }
 }
 
+impl Default for MatType {
+    fn default() -> Self {
+        MatType::Lambertian(Lambertian {
+            albedo: Vec3::new(0.1, 0.2, 0.5),
+        })
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct Lambertian {
     pub albedo: Vec3,
@@ -47,7 +55,7 @@ pub struct Lambertian {
 impl Material for Lambertian {
     fn scatter(
         &self,
-        _r_in: &Ray,
+        r_in: &Ray,
         rec: &HitRecord,
         attenuation: &mut Vec3,
         scattered: &mut Ray,
@@ -59,6 +67,7 @@ impl Material for Lambertian {
         *scattered = Ray {
             orig: rec.p,
             dir: scatter_dir,
+            time: r_in.time,
         };
         *attenuation = self.albedo;
 
@@ -84,6 +93,7 @@ impl Material for Metal {
         *scattered = Ray {
             orig: rec.p,
             dir: reflected + self.fuzz * Vec3::random_unit(),
+            time: r_in.time,
         };
         *attenuation = self.albedo;
         dot(scattered.dir, rec.norm) > 0.
@@ -133,7 +143,11 @@ impl Material for Dielectric {
             dir = refract(unit_dir, rec.norm, refraction_ratio);
         }
 
-        *scattered = Ray { orig: rec.p, dir };
+        *scattered = Ray {
+            orig: rec.p,
+            dir,
+            time: r_in.time,
+        };
 
         true
     }
